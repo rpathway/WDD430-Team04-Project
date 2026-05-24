@@ -55,7 +55,11 @@ Team project repo for WDD430
 ```
 
 ## Team members
-- Robbie Yamashita
+- Amos Oluniyi 
+- Robert Yamashita 
+- Maxwell Chukwuemeka Iwe 
+- Wisdom Samuel Etim 
+- Kamohelo G Mejaele 
 
 
 # Next.js README Documentation
