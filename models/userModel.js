@@ -28,21 +28,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
-    bio: {
-      type: String,
-      default: "",
-    },
-
-    specialty: {
-      type: String,
-      default: "",
-    },
-
-    location: {
-      type: String,
-      default: "",
-    },
   },
   {
     timestamps: true,

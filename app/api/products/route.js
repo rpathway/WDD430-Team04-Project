@@ -1,5 +1,4 @@
-import { getProducts, createProducts, updateProduct } from "../../../controllers/productController";
-
+import { getProducts, createProducts } from "../../../controllers/productController";
 
 
 export async function GET() {

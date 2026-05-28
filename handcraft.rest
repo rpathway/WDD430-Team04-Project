@@ -11,7 +11,7 @@ POST http://localhost:3000/api/products
 Content-Type: application/json 
 
 {
-    "title": "Hand-carved Walnut Serving Bowl",
+    "title": "Hand-carved Walnut Serving Strawn",
     "description" :"Deep serving bowl carved from a single piece of walnut. Finished with food-safe walnut oil. Each bowl shows unique wood grain patterns.",
     "price": 95,
     "category": "Woodworking",
@@ -20,7 +20,7 @@ Content-Type: application/json
         "https://i.imgur.com/bowl2.jpg"
         ],
     "stock": 6,
-    "seller": "66f4a1b2c3d4e5f6a7b8c9d0",
+    "seller": "6a184471bd9c211021865bf3",
     "featured": true
 }
 
@@ -46,3 +46,96 @@ Content-Type: application/json
 
 ### Delete Product
 DELETE http://localhost:3000/api/products/6a144cf981f599b913bfb6ae
+
+
+
+=========== USERS APIs ===========
+
+### Get all users, admin features
+GET http://localhost:3000/api/profiles
+
+
+### Create new user
+POST http://localhost:3000/api/profiles
+Content-Type: application/json
+
+{
+    "name": "Brian Callums",
+    "email": "callums@yahoo.com",
+    "password": "123456",
+    "role": "admin",
+    "profileImage": "./images.jpg"
+}
+
+
+### Get single user profile
+GET http://localhost:3000/api/profiles/6a183e2bbd9c211021865bf2
+
+
+### Edit user
+PUT http://localhost:3000/api/profiles/6a183e2bbd9c211021865bf2
+Content-Type: application/json
+
+{
+    "name": "Fisoye Amos Oluniyi",
+    "email": "amos@yahoo.com",
+    "password": "123456",
+    "role": "buyer",
+    "profileImage": "./images.jpg",
+    "bio": "Lover of artworks",
+    "specialty": "Designer",
+    "location": "Nigeria"
+}
+
+
+### Delete user
+DELETE http://localhost:3000/api/profiles/6a183e2bbd9c211021865bf2
+
+
+================= SELLER APIs ====================
+### Get all sellers (Admin)
+GET http://localhost:3000/api/sellers
+
+
+### Create a seller user
+POST http://localhost:3000/api/sellers
+Content-Type: application/json
+
+{
+    "name": "Sanchez England",
+    "email": "example@gmail.com",
+    "password": "123456",
+    "profileImage": "./image10.png",
+    "bio": "Professional Craft drafter",
+    "specialty": "Office Appliances",
+    "location": "Chile",
+    "socialLinks": {
+        "facebook": "www.facebook.com", 
+        "instagram": "www.instagram.com"
+    }
+}
+
+
+### Get single seller information
+GET http://localhost:3000/api/sellers/6a184e54bd9c211021865bf6
+
+
+### Edit seller profile 
+PUT http://localhost:3000/api/sellers/6a184e54bd9c211021865bf6
+Content-Type: application/json
+
+{
+    "name": "Promise Adams",
+    "email": "promise@gmail.com",
+    "password": "123456",
+    "profileImage": "./image1.png",
+    "bio": "Skilled fashion Designer",
+    "specialty": "Wedding aparatus",
+    "location": "Paris",
+    "socialLinks": {"facebook": "www.facebook.com"},
+    "products": "6a1846e5bd9c211021865bf4"
+}
+
+
+### Delete seller
+DELETE http://localhost:3000/api/sellers/6a184e54bd9c211021865bf6
