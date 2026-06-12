@@ -1,5 +1,6 @@
 import { connectDB } from '@/lib/db';
 import User from "../models/userModel";
+import Seller from "../models/sellerModel";
 import bcrypt from "bcryptjs";
 
 export async function getUsers() {
@@ -59,6 +60,12 @@ export async function getSingleUser(id) {
         const hashedPassword = await bcrypt.hash(body.password, 10);
     
         const user = await User.create({...body, password: hashedPassword});
+
+        if (user.role === "seller") {
+          await Seller.create({
+            user: user._id,
+          });
+        }
     
         return Response.json(user, { status: 201 });
       } catch (error) {
