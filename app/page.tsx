@@ -70,7 +70,7 @@ export default async function HomePage() {
               <Link href="/products" className="bg-terracotta text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-terra-dark transition-colors shadow-sm">
                 Shop Now
               </Link>
-              <Link href="/sellers" className="bg-white text-terracotta text-sm font-semibold px-5 py-2.5 rounded-xl border border-terracotta hover:bg-terracotta/10 transition-colors">
+              <Link href="/sellers/complete-profile" className="bg-white text-terracotta text-sm font-semibold px-5 py-2.5 rounded-xl border border-terracotta hover:bg-terracotta/10 transition-colors">
                 Become a Seller
               </Link>
             </div>
@@ -188,7 +188,7 @@ export default async function HomePage() {
               <p className="font-serif text-xl md:text-2xl font-bold text-white mb-1">Share your craft with the world</p>
               <p className="text-sm text-subheading leading-relaxed">Join our community of sellers and start selling today.</p>
             </div>
-            <Link href="/sellers" className="inline-block bg-terracotta text-white text-sm font-semibold px-8 py-3 rounded-xl hover:bg-terra-dark transition-colors flex-shrink-0">
+            <Link href="/sellers/complete-profile" className="inline-block bg-terracotta text-white text-sm font-semibold px-8 py-3 rounded-xl hover:bg-terra-dark transition-colors flex-shrink-0">
               Become a Seller
             </Link>
           </div>

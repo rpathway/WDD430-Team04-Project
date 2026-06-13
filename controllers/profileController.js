@@ -1,5 +1,7 @@
 import { connectDB } from '@/lib/db';
 import User from "../models/userModel";
+import Seller from "../models/sellerModel";
+import bcrypt from "bcryptjs";
 
 export async function getUsers() {
     try {
@@ -45,10 +47,27 @@ export async function getSingleUser(id) {
         await connectDB();
     
         const body = await request.json();
+
+        const existingUser = await User.findOne({email: body.email});
+
+        if (existingUser) {
+          return Response.json(
+            { message: "User exists" },
+            { status: 400 }
+          );
+        };
+
+        const hashedPassword = await bcrypt.hash(body.password, 10);
     
-        const user = await User.create(body);
+        const user = await User.create({...body, password: hashedPassword});
+
+        if (user.role === "seller") {
+          await Seller.create({
+            user: user._id,
+          });
+        }
     
-        return Response.json(user);
+        return Response.json(user, { status: 201 });
       } catch (error) {
         return Response.json(
           { message: error.message },

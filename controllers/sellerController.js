@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { connectDB } from '@/lib/db';
 import Seller from "../models/sellerModel";
 
@@ -87,5 +88,77 @@ export async function getSingleSeller(id) {
             { message: error.message },
             { status: 500 }
         );
+    }
+  }
+
+
+  export async function getCurrentSeller() {
+    try {
+      await connectDB();
+  
+      const session = await auth();
+  
+      if (!session) {
+        return Response.json(
+          { message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+  
+      const seller = await Seller.findOne({
+        user: session.user.id,
+      });
+  
+      if (!seller) {
+        return Response.json(
+          { message: "Seller not found" },
+          { status: 404 }
+        );
+      }
+  
+      return Response.json(seller);
+    } catch (error) {
+      return Response.json(
+        { message: error.message },
+        { status: 500 }
+      );
+    }
+  }
+
+
+  export async function updateCurrentSeller(
+    request
+  ) {
+    try {
+      await connectDB();
+  
+      const session = await auth();
+  
+      if (!session) {
+        return Response.json(
+          { message: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+  
+      const body = await request.json();
+  
+      const seller =
+        await Seller.findOneAndUpdate(
+          {
+            user: session.user.id,
+          },
+          body,
+          {
+            new: true,
+          }
+        );
+  
+      return Response.json(seller);
+    } catch (error) {
+      return Response.json(
+        { message: error.message },
+        { status: 500 }
+      );
     }
   }
