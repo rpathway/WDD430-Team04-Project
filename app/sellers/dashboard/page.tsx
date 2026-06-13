@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { connectDB } from "@/lib/db";
 import Seller from "@/models/sellerModel";
-import LogoutButton from "../../ui/logoutButton";
+import LogoutButton from "@/app/ui/logoutButton";
 
 export default async function SellerDashboard() {
   await connectDB();
