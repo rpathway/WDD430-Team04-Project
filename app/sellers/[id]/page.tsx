@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/app/ui/header';
+import Footer from '@/app/ui/footer';
 import StarRating from '@/app/ui/star-rating';
 
 export default function SellerProfilePage() {
@@ -224,6 +225,7 @@ export default function SellerProfilePage() {
         </div>
 
       </div>
+      <Footer />
     </div>
   );
 }

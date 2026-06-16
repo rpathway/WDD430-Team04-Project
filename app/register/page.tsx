@@ -98,7 +98,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
+    <main className="flex m-auto md:mb-20 md:mt-10 my-10 my-20 items-center justify-center px-4">
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-lg">
         <h1 className="mb-2 text-center text-3xl font-bold text-amber-700">
           Create Account
