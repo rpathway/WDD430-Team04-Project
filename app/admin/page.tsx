@@ -1,13 +1,5 @@
 import { auth } from "@/auth";
-import Header from "../ui/header";
-import Link from "next/link";
-
-import { connectDB } from "@/lib/db";
-
-import User from "@/models/userModel";
-import Seller from "@/models/sellerModel";
-import Product from "@/models/productModel";
-import Review from "@/models/reviewModel";
+import LogoutButton from "../ui/logoutButton";
 
 export default async function AdminDashboard() {
   await connectDB();

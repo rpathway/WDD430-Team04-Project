@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Header from './ui/header';
-import StarRating from './ui/star-rating';
+import Header from '@/app/ui/header';
+import StarRating from '@/app/ui/star-rating';
 
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
