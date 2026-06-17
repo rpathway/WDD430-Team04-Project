@@ -2,6 +2,8 @@ import '@/app/ui/global.css';
 import { inter, playfair } from '@/app/ui/fonts';
 import type { Metadata } from "next";
 import Providers from '@/components/providers';
+import Header from '@/app/ui/header';
+import Footer from '@/app/ui/footer';
 
 
 export const metadata: Metadata = {
@@ -21,7 +23,11 @@ export default function RootLayout({
     <html lang="en" className="w-screen">
       <body className={`${inter.className} min-h-full overflow-y-auto antialiased`}>
         <Providers>
-          {children}
+          <Header />
+            <div className="min-h-screen bg-cream-white">
+              {children}
+            </div>
+          <Footer />
         </Providers>
       </body>
     </html>

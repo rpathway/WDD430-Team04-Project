@@ -3,7 +3,7 @@ import { connectDB } from "@/lib/db";
 
 import Review from "@/models/reviewModel";
 import Product from "@/models/productModel";
-import { updateProductRating } from "../lib/updateProductRating";
+import { updateProductRating } from "@/lib/updateProductRating";
 
 export async function getReviews() {
   try {

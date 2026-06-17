@@ -1,53 +1,68 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import LogoutButton from './logoutButton';
 import { useSession } from 'next-auth/react';
-
+import { useCart } from '@/app/context/cartContext';
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: 'Home',       href: '/' },
   { label: 'Shop',       href: '/products' },
   { label: 'Artisans',   href: '/sellers' },
-  { label: 'Categories', href: '/products' },
+  // { label: 'Categories', href: '/products' },
 ];
 
 
 export default function Header() {
-  const { data: session } = useSession();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const router                        = useRouter();
+  const { data: session }             = useSession();
+  const [menuOpen, setMenuOpen]       = useState(false);
+  const { cartCount }                 = useCart();
+  const [searchTerm, setSearchTerm]   = useState("");
+  const [results, setResults]         = useState<any[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [searching, setSearching]     = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    async function loadCart() {
-      try {
-
-        const response =
-          await fetch("/api/carts");
-  
-        if (!response.ok) return;
-  
-        const cart =
-          await response.json();
-  
-        const count =
-          cart.items?.reduce(
-            (
-              total: number,
-              item: any
-            ) =>
-              total +
-              item.quantity,
-            0
-          ) || 0;
-  
-        setCartCount(count);
-      } catch {}
+    if (!searchTerm.trim()) {
+      setResults([]);
+      setShowResults(false);
+      return;
     }
-  
-    loadCart();
+    setSearching(true);
+    const timeout = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setResults(data.slice(0, 6));
+          setShowResults(true);
+        }
+      } catch {} finally {
+        setSearching(false);
+      }
+    }, 350);
+    return () => clearTimeout(timeout);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowResults(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  function handleSelect(productId: string) {
+    setShowResults(false);
+    setSearchTerm("");
+    router.push(`/products/${productId}`);
+  }
 
   return (
     <header className="bg-white border-b border-warm-beige sticky top-0 z-50">
@@ -72,11 +87,41 @@ export default function Header() {
           </nav>
 
           {/* Search */}
-          <div className="flex-1 flex items-center bg-cream-white border border-warm-beige rounded-xl px-3 py-2 gap-2 min-w-0">
-            <svg className="w-4 h-4 text-olive-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input type="search" placeholder="Search handcrafted items..." className="bg-transparent text-sm text-charcol placeholder-subheading outline-none w-full min-w-0"/>
+          <div className="flex-1 relative min-w-0" ref={searchRef}>
+            <div className="flex items-center bg-cream-white border border-warm-beige rounded-xl px-3 py-2 gap-2">
+              <svg className="w-4 h-4 text-olive-green flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="search"
+                placeholder="Search handcrafted items..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => searchTerm && setShowResults(true)}
+                className="bg-transparent text-sm text-charcol placeholder-subheading outline-none w-full min-w-0"
+              />
+            </div>
+
+            {showResults && (
+              <div className="absolute top-full left-0 mt-1 w-full bg-white border border-warm-beige rounded-xl shadow-lg z-50 max-h-80 overflow-y-auto">
+                {searching ? (
+                  <p className="px-4 py-3 text-sm text-subheading">Searching...</p>
+                ) : results.length === 0 ? (
+                  <p className="px-4 py-3 text-sm text-subheading">No results found.</p>
+                ) : (
+                  results.map((product: any) => (
+                    <button
+                      key={product._id}
+                      onClick={() => handleSelect(product._id)}
+                      className="flex items-center gap-3 w-full px-4 py-2.5 hover:bg-cream-white text-left transition-colors cursor-pointer"
+                    >
+                      <span className="text-sm text-charcol font-medium truncate">{product.title}</span>
+                      <span className="text-xs text-subheading ml-auto">${product.price}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
 
           {/* Cart & auth */}

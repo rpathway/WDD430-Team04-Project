@@ -55,22 +55,29 @@ export const {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
 
+      if (trigger === "update" && session) {
+        token.name = session.name ?? token.name;
+        token.email = session.email ?? token.email;
+        token.profileImage = session.profileImage ?? token.profileImage;
+      }
+
       return token;
     },
-
     async session({ session, token }) {
       if (session.user && token.role) {
         session.user.id = token.id as string;
         session.user.role = token.role as any;
       }
-    
+      if (token.profileImage) {
+        (session.user as any).profileImage = token.profileImage;
+      }
       return session;
-    }
+    },
   },
 });

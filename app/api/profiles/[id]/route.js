@@ -1,4 +1,4 @@
-import { getSingleUser, updateUser, deleteUser } from "../../../../controllers/profileController";
+import { getSingleUser, updateUser, deleteUser } from "@/controllers/profileController";
 
 export async function GET(request, context) {
     const {id} = await context.params;

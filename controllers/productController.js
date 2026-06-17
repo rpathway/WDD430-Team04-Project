@@ -26,12 +26,15 @@ import { auth } from "@/auth";
 //   }
 // }
 
-export async function getProducts() {
+export async function getProducts(session, search = "") {
   try {
     await connectDB();
 
-    const products = await Product.find();
+    const query = search
+      ? { title: { $regex: search, $options: "i" } }
+      : {};
 
+    const products = await Product.find(query);
     return Response.json(products);
   } catch (error) {
     return Response.json(

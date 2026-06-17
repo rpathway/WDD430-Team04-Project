@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { connectDB } from '@/lib/db';
-import Seller from "../models/sellerModel";
+import Seller from "@/models/sellerModel";
 
 export async function getSellers() {
     try {

@@ -1,6 +1,7 @@
 import { connectDB } from '@/lib/db';
-import User from "../models/userModel";
-import Seller from "../models/sellerModel";
+import { auth } from "@/auth";
+import User from "@/models/userModel";
+import Seller from "@/models/sellerModel";
 import bcrypt from "bcryptjs";
 
 export async function getUsers() {
@@ -19,27 +20,21 @@ export async function getUsers() {
   }
 
 export async function getSingleUser(id) {
-    try {
-      await connectDB();
-  
-      const user = await User.findById(id);
-  
-      if (!user) {
-        return Response.json(
-          { message: "User not found, Please register" },
-          { status: 404 }
-        );
-      }
-  
-      return Response.json(user);
-  
-    } catch (error) {
+  try {
+    await connectDB();
+    const user = await User.findById(id).select("-password");
+    if (!user) {
       return Response.json(
-        { message: error.message },
-        { status: 500 }
+        { message: "User not found, Please register" },
+        { status: 404 }
       );
     }
-  };
+    return Response.json(user);
+  } catch (error) {
+    return Response.json({ message: error.message }, { status: 500 });
+  }
+}
+
 
 
   export async function createUsers(request) {
@@ -76,21 +71,32 @@ export async function getSingleUser(id) {
       }
   }
 
-  export async function updateUser(request, id) {
-    try {
-        await connectDB();
+export async function updateUser(request, id) {
+  try {
+    await connectDB();
+    const session = await auth();
 
-        const body = await request.json();
+    if (!session?.user?.id || session.user.id !== id) {
+      return Response.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-        const updatedUser = await User.findByIdAndUpdate(id, body, { new: true });
-        return Response.json(updatedUser);
-    } catch (error) {
-        return Response.json(
-            { message: error.message },
-            { status: 500 }
-        );
-    };
-  };
+    const body = await request.json();
+
+    const allowedFields = ["name", "email", "profileImage"];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) updates[field] = body[field];
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updates, {
+      returnDocument: "after",
+    }).select("-password");
+
+    return Response.json(updatedUser);
+  } catch (error) {
+    return Response.json({ message: error.message }, { status: 500 });
+  }
+}
 
   export async function deleteUser(id) {
     try {
