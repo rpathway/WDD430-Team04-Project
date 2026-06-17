@@ -107,7 +107,7 @@ export async function addToCart(request) {
 // UPDATE CART ITEM QUANTITY
 
 export async function updateCartItem(
-  request
+  request, productId
 ) {
   try {
     await connectDB();
@@ -122,7 +122,6 @@ export async function updateCartItem(
     }
 
     const {
-      productId,
       quantity,
     } = await request.json();
 
@@ -171,7 +170,7 @@ export async function updateCartItem(
 // REMOVE ITEM FROM CART
 
 export async function removeCartItem(
-  request
+  productId
 ) {
   try {
     await connectDB();
@@ -185,8 +184,8 @@ export async function removeCartItem(
       );
     }
 
-    const { productId } =
-      await request.json();
+    // const { productId } =
+    //   await request.json();
 
     const cart = await Cart.findOne({
       user: session.user.id,

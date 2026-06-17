@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Header from "../ui/header";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -98,6 +99,8 @@ export default function RegisterPage() {
   }
 
   return (
+    <div className="min-h-screen bg-cream-white">
+      <Header />
     <main className="flex min-h-screen items-center justify-center bg-stone-50 px-4">
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 shadow-lg">
         <h1 className="mb-2 text-center text-3xl font-bold text-amber-700">
@@ -196,5 +199,6 @@ export default function RegisterPage() {
         </form>
       </div>
     </main>
+    </div>
   );
 }

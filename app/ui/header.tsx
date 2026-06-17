@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-
+import { useEffect, useState } from "react";
+import LogoutButton from './logoutButton';
+import { useSession } from 'next-auth/react';
 
 
 const navLinks = [
@@ -12,8 +13,41 @@ const navLinks = [
   { label: 'Categories', href: '/products' },
 ];
 
+
 export default function Header() {
+  const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    async function loadCart() {
+      try {
+
+        const response =
+          await fetch("/api/carts");
+  
+        if (!response.ok) return;
+  
+        const cart =
+          await response.json();
+  
+        const count =
+          cart.items?.reduce(
+            (
+              total: number,
+              item: any
+            ) =>
+              total +
+              item.quantity,
+            0
+          ) || 0;
+  
+        setCartCount(count);
+      } catch {}
+    }
+  
+    loadCart();
+  }, []);
 
   return (
     <header className="bg-white border-b border-warm-beige sticky top-0 z-50">
@@ -47,18 +81,44 @@ export default function Header() {
 
           {/* Cart & auth */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link href="/cart" className="relative p-1">
+            <Link href="/carts" className="relative p-1">
               <svg className="w-6 h-6 text-charcol" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-terracotta text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-terracotta text-white text-[9px] font-bold rounded-full flex items-center justify-center">{cartCount}</span>
             </Link>
-            <Link href="/login" className="hidden sm:block text-xs font-medium text-charcol hover:text-terracotta transition-colors px-1">
-              Login
-            </Link>
-            <Link href="/register" className="bg-terracotta text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-terra-dark transition-colors whitespace-nowrap">
-              Sign Up
-            </Link>
+            {session ? (
+                <>
+                  <Link
+                      href={
+                        session.user.role === "seller"
+                          ? "/sellers/dashboard"
+                          : "/profile"
+                      }
+                      className="hidden sm:block text-xs font-medium text-charcol hover:text-terracotta transition-colors px-1"
+                    >
+                      Hi, {session.user.name}
+                  </Link>
+
+                  <LogoutButton />
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="hidden sm:block text-xs font-medium text-charcol hover:text-terracotta transition-colors px-1"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    href="/register"
+                    className="bg-terracotta text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-terra-dark transition-colors whitespace-nowrap"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
 
             {/* Hamburger (mobile) */}
             <button className="md:hidden p-1.5 rounded-lg hover:bg-cream-white transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Header from "@/app/ui/header";
 
 export default function CompleteSellerProfilePage() {
   const router = useRouter();
@@ -87,6 +88,9 @@ export default function CompleteSellerProfilePage() {
   }
 
   return (
+    <div className="min-h-screen bg-cream-white">
+      <Header />
+
     <main className="min-h-screen bg-stone-50 px-4 py-10">
       <div className="mx-auto max-w-2xl rounded-3xl bg-white p-8 shadow-lg">
         <h1 className="mb-2 text-3xl font-bold text-amber-700">
@@ -209,5 +213,6 @@ export default function CompleteSellerProfilePage() {
         </form>
       </div>
     </main>
+    </div>
   );
 }

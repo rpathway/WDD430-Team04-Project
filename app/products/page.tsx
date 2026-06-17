@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Header from '@/app/ui/header';
 import StarRating from '@/app/ui/star-rating';
+import { cookies } from "next/headers";
 
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -9,11 +10,21 @@ const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
 async function getProducts() {
   try {
-    const res = await fetch(`${BASE}/api/products`, { cache: 'no-store' });
+    const cookieStore = await cookies();
+
+    const res = await fetch(`${BASE}/api/products`, {
+      cache: "no-store",
+      headers: {
+        Cookie: cookieStore.toString(), // 🔥 IMPORTANT
+      },
+    });
+
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 
@@ -24,7 +35,7 @@ const CATEGORIES = [
   { label: 'Fashion',     tag: 'fashion' },
   { label: 'Home Decor',  tag: 'home-decor' },
   { label: 'Accessories', tag: 'accessories' },
-  { label: 'Paintings',   tag: 'paintings' },
+  { label: 'Painting',   tag: 'painting' },
 ];
 
 const SORT_OPTIONS = [

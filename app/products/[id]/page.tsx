@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/app/ui/header';
 import StarRating from '@/app/ui/star-rating';
+import ReviewForm from '@/app/ui/review-form';
 
 
 
@@ -17,7 +18,10 @@ export default function ProductDetailPage() {
   const [activeImg, setActiveImg]     = useState(0);
   const [qty, setQty]                 = useState(1);
   const [wishlisted, setWishlisted]   = useState(false);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [cartMessage, setCartMessage] = useState("");
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
 
 
   useEffect(() => {
@@ -41,6 +45,15 @@ export default function ProductDetailPage() {
           };
         }
 
+        const reviewRes = await fetch(
+          `/api/reviews/product/${id}`
+        );
+        
+        if (reviewRes.ok) {
+          const reviewData = await reviewRes.json();
+          setReviews(reviewData);
+        }
+
       } catch (e: any) {
         setError(e.message);
       } finally {
@@ -50,6 +63,50 @@ export default function ProductDetailPage() {
 
     load();
   }, [id]);
+
+
+  async function handleAddToCart() {
+    try {
+      setAddingToCart(true);
+      setCartMessage("");
+  
+      const response = await fetch(
+        "/api/carts",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            productId: product._id,
+            quantity: qty,
+          }),
+        }
+      );
+  
+      const data =
+        await response.json();
+  
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "Failed to add item"
+        );
+      }
+  
+      setCartMessage(
+        "Product added to cart"
+      );
+    } catch (error: any) {
+      setCartMessage(
+        error.message ||
+          "Something went wrong"
+      );
+    } finally {
+      setAddingToCart(false);
+    }
+  }
 
 
   if (loading) return (
@@ -104,12 +161,44 @@ export default function ProductDetailPage() {
       ),
     },
     {
-      key: 'reviews',
+      key: "reviews",
       label: `Reviews (${product.totalReviews || 0})`,
       content: (
-        <p className="text-sm text-subheading py-2 text-center">
-          {product.totalReviews > 0 ? 'Reviews coming soon.' : 'No reviews yet. Be the first!'}
-        </p>
+        <div className="space-y-4">
+          {reviews.length === 0 ? (
+            <p className="text-sm text-subheading">
+              No reviews yet.
+            </p>
+          ) : (
+            reviews.map((review) => (
+              <div
+                key={review._id}
+                className="border-b border-light-orange pb-4"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="font-semibold text-charcol">
+                    {review.user?.name}
+                  </h4>
+    
+                  <span className="text-xs text-subheading">
+                    {new Date(
+                      review.createdAt
+                    ).toLocaleDateString()}
+                  </span>
+                </div>
+    
+                <StarRating
+                  rating={review.rating}
+                  count={0}
+                />
+    
+                <p className="text-sm text-subheading-dark mt-2">
+                  {review.comment}
+                </p>
+              </div>
+            ))
+          )}
+        </div>
       ),
     },
   ];
@@ -237,14 +326,32 @@ export default function ProductDetailPage() {
 
             {/* CTA's */}
             <div className="flex gap-3 mb-6">
-              <button disabled={!inStock}
-                className="flex-1 bg-terracotta text-white text-sm font-bold py-3.5 rounded-xl hover:bg-terra-dark transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                {inStock ? 'Add to Cart' : 'Out of Stock'}
-              </button>
+            <button
+              onClick={handleAddToCart}
+              disabled={!inStock || addingToCart}
+              className="flex-1 bg-terracotta text-white text-sm font-bold py-3.5 rounded-xl hover:bg-terra-dark transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {addingToCart
+                ? "Adding..."
+                : inStock
+                ? "Add to Cart"
+                : "Out of Stock"}
+            </button>
               <button onClick={() => setWishlisted(!wishlisted)}
                 className={`flex-1 text-sm font-bold py-3.5 rounded-xl border transition-colors ${wishlisted ? 'bg-terra-dark/20 text-terracotta border-terracotta' : 'bg-white text-charcol border-light-orange hover:border-terracotta hover:bg-terra-dark/20'}`}>
                 {wishlisted ? '♥ Wishlisted' : '♡ Wishlist'}
               </button>
+              {cartMessage && (
+                <p
+                  className={`text-sm mt-3 ${
+                    cartMessage.includes("added")
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
+                  {cartMessage}
+                </p>
+              )}
             </div>
 
             {/* Accordion */}
@@ -260,8 +367,15 @@ export default function ProductDetailPage() {
                 </div>
               ))}
             </div>
-          </div>
+            <div className="mt-8 bg-white border border-light-orange rounded-2xl p-4">
+                <h3 className="font-bold text-lg mb-4">
+                  Write a Review
+                </h3>
 
+                <ReviewForm productId={product._id} />
+              </div>
+          </div>
+          
         </div>
       </div>
     </div>
