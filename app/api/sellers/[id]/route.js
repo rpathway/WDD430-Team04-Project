@@ -1,4 +1,4 @@
-import { getSingleSeller, updateSeller, deleteSeller } from "../../../../controllers/sellerController";
+import { getSingleSeller, updateSeller, deleteSeller } from "@/controllers/sellerController";
 
 
 export async function GET(request, context) {

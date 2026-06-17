@@ -1,4 +1,4 @@
-import { getSingleProduct, updateProduct, deleteProduct } from "../../../../controllers/productController";
+import { getSingleProduct, updateProduct, deleteProduct } from "@/controllers/productController";
 
 
 

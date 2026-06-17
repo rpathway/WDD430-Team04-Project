@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { connectDB } from '@/lib/db';
-import Seller from "../models/sellerModel";
+import Seller from "@/models/sellerModel";
 
 export async function getSellers() {
     try {
@@ -140,19 +140,23 @@ export async function getSingleSeller(id) {
           { status: 401 }
         );
       }
+      console.log("SESSION USER:", session.user.id);
   
       const body = await request.json();
   
-      const seller =
-        await Seller.findOneAndUpdate(
-          {
-            user: session.user.id,
-          },
-          body,
-          {
-            new: true,
-          }
-        );
+      const seller = await Seller.findOneAndUpdate(
+        { user: session.user.id },
+        {
+          ...body,
+          user: session.user.id,
+        },
+        {
+          new: true,
+          upsert: true,
+        }
+      );
+
+        console.log("UPDATED SELLER:", seller);
   
       return Response.json(seller);
     } catch (error) {

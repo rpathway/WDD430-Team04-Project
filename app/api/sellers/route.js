@@ -1,4 +1,4 @@
-import { getSellers, createSellers } from "../../../controllers/sellerController";
+import { getSellers, createSellers } from "@/controllers/sellerController";
 
 export async function GET() {
     
