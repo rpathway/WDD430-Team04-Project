@@ -11,6 +11,7 @@ const navLinks = [
   { label: 'Home',       href: '/' },
   { label: 'Shop',       href: '/products' },
   { label: 'Artisans',   href: '/sellers' },
+  { label: 'Community', href: '/community' },
   // { label: 'Categories', href: '/products' },
 ];
 
