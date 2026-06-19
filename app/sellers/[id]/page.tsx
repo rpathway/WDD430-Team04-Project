@@ -27,7 +27,7 @@ export default function SellerProfilePage() {
         if (pr.ok) {
           const all = await pr.json();
           if (Array.isArray(all)) {
-            setProducts(all.filter((p: any) => String(p.seller) === String(s._id)));
+            setProducts(all.filter((p: any) => String(p.seller) === String(s.user?._id)));
           }
         }
       } catch (e: any) {
@@ -69,7 +69,7 @@ export default function SellerProfilePage() {
         <span>›</span>
         <Link href="/sellers" className="hover:text-terracotta transition-colors">Artisans</Link>
         <span>›</span>
-        <span className="text-charcol font-medium line-clamp-1">{seller.name || 'Profile'}</span>
+        <span className="text-charcol font-medium line-clamp-1">{seller.user?.name || 'Profile'}</span>
       </nav>
 
       {/* Profile header card */}
@@ -78,15 +78,15 @@ export default function SellerProfilePage() {
 
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full bg-light-orange overflow-hidden flex-shrink-0 flex items-center justify-center border-4 border-warm-beige shadow">
-            {seller.profileImage
-              ? <img src={seller.profileImage} alt={seller.name} className="w-full h-full object-cover" />
+            {seller.user?.profileImage
+              ? <img src={seller.user?.profileImage} alt={seller.user?.name} className="w-full h-full object-cover" />
               : <span className="text-4xl">🧑‍🎨</span>}
           </div>
 
           {/* Details */}
           <div className="flex-1 text-center sm:text-left">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-              <h1 className="font-serif text-2xl font-bold text-charcol">{seller.name || 'Artisan'}</h1>
+              <h1 className="font-serif text-2xl font-bold text-charcol">{seller.user?.name || 'Artisan'}</h1>
               {seller.isVerified && (
                 <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-olive-green bg-green-pastel px-2.5 py-1 rounded-full border border-sage-green">
                   ✓ Verified
@@ -155,7 +155,7 @@ export default function SellerProfilePage() {
       {/* Products by this seller */}
       <div>
         <h2 className="font-serif text-xl font-bold text-charcol mb-4">
-          {seller.name ? `${seller.name}'s Products` : 'Products'}
+          {seller.user?.name ? `${seller.user?.name}'s Products` : 'Products'}
         </h2>
 
         {products.length === 0 ? (

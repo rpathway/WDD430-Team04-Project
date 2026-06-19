@@ -6,7 +6,8 @@ export async function getSellers() {
     try {
       await connectDB();
   
-      const sellers = await Seller.find();
+      const sellers = await Seller.find()
+      .populate("user", "name email profileImage");
   
       return Response.json(sellers);
     } catch (error) {
@@ -21,7 +22,8 @@ export async function getSingleSeller(id) {
     try {
       await connectDB();
   
-      const seller = await Seller.findById(id);
+      const seller = await Seller.findById(id)
+      .populate("user", "name email profileImage");
   
       if (!seller) {
         return Response.json(

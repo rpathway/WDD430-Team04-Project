@@ -55,10 +55,10 @@ export default async function SellersPage() {
             >
               {/* Avatar */}
               <div className="bg-light-orange h-28 flex items-center justify-center">
-                {seller.profileImage ? (
+                {seller.user?.profileImage ? (
                   <img
-                    src={seller.profileImage}
-                    alt={seller.name}
+                    src={seller.user?.profileImage}
+                    alt={seller.user?.name}
                     className="w-20 h-20 rounded-full object-cover border-4 border-white shadow"
                   />
                 ) : (
@@ -71,7 +71,7 @@ export default async function SellersPage() {
               {/* Info */}
               <div className="p-4 text-center">
                 <h2 className="font-serif text-base font-bold text-charcol mb-0.5">
-                  {seller.name || 'Artisan'}
+                  {seller.user?.name || "Artisan"}
                 </h2>
 
                 {seller.specialty && (
@@ -101,7 +101,7 @@ export default async function SellersPage() {
                     View Profile
                   </Link>
                   <Link
-                    href={`/products?seller=${seller._id}`}
+                    href={`/products?seller=${seller.user?._id}`}
                     className="flex-1 text-xs font-semibold bg-terracotta text-white rounded-xl py-2 hover:bg-terra-dark transition-colors text-center"
                   >
                     View Shop
